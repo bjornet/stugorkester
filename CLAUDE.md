@@ -60,3 +60,10 @@ infrastructure.
   them (see Payment entity notes in the design doc).
 - Airbnb sync is never assumed watertight — conflict detection and feed-health
   alerts are required, not optional.
+
+## Version control
+
+- **Never squash merge.** Merge pull requests with a real merge commit (or
+  rebase) so the individual commits stay in the history. Keep history real —
+  don't collapse a branch into a single commit.
+- Write commits that stand on their own, since each one survives the merge.

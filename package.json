@@ -43,6 +43,8 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.21",
+    "@fullcalendar/daygrid": "^6.1.21",
     "better-sqlite3": "^12.10.0"
   }
 }

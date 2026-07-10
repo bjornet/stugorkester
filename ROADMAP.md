@@ -3,7 +3,7 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** calendar engine done — the app is runnable and usable locally.
+**Status now:** tasks & cleaning flow done — the app is runnable and usable locally.
 **▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
 
 | Phase | Goal                       | You can test-run…                                         | Status  |
@@ -11,8 +11,8 @@ Full design: `docs/orkestreringssystem.md`.
 | 0     | Foundation                 | —                                                         | ✅ Done |
 | 1     | First vertical slice: CRUD | Create a property, add/list bookings (`bun run dev`)      | ✅ Done |
 | 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done |
-| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ▶ Next  |
-| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ☐       |
+| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
+| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ▶ Next  |
 | 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ☐       |
 | 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐       |
 
@@ -29,11 +29,15 @@ Legend: ✅ done · ▶ in progress / next · ☐ not started.
 - **2 — Calendar engine ✅** FullCalendar month view + blocking CRUD + the "is
   range X–Y free?" check over bookings + blockings (`src/lib/availability.ts`,
   unit-tested), with non-blocking conflict warnings on save ("Save anyway").
-- **3 — Tasks/cleaning** Rule: confirmed booking auto-creates a cleaning task
-  with deadline = next check-in; recurring maintenance tasks; task board.
-  _Design-system checkpoint:_ decide whether the growing surface (task board,
-  modals, richer forms) justifies moving to **shadcn-svelte** (Tailwind +
-  bits-ui). Until then, stay on the hand-rolled CSS in `+layout.svelte`.
+- **3 — Tasks/cleaning ✅** Task CRUD with a status-filtered board, plus the
+  rule (`src/lib/cleaning.ts`, unit-tested): confirming a booking auto-creates a
+  cleaning task due on the checkout day, and moving the checkout moves the task.
+  _Not yet:_ recurring maintenance tasks (sotning, vattenavstängning) — these
+  need a scheduler, so they ride along with the Phase 4 worker.
+  _Design-system checkpoint (open, for you to decide):_ the surface is growing
+  (task board, richer forms). Decide whether that justifies moving to
+  **shadcn-svelte** (Tailwind + bits-ui). Left on the hand-rolled CSS in
+  `+layout.svelte` for now — this is a deliberate call to make, not to automate.
 - **4 — Sync** `+server.ts` iCal export feed + a worker process (Effect) that
   polls Airbnb, creates shadow bookings, and raises feed-health/conflict alerts.
 - **5 — Docs & money** PDF generator (terms addendum, rental agreement, booking

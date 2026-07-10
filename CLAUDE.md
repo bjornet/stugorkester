@@ -1,3 +1,11 @@
+## Project Configuration
+
+- **Language**: TypeScript
+- **Package Manager**: npm
+- **Add-ons**: drizzle, sveltekit-adapter, eslint, prettier
+
+---
+
 # stugorkester
 
 Orchestration system for cabin rental management (bookings, cleaning, guests,
@@ -19,26 +27,26 @@ or database — never transliterated or used as-is. Use the glossary below as th
 canonical mapping; extend it here whenever a new Swedish term is introduced.
 
 | Swedish (business term) | English (code/schema term) |
-|---|---|
-| Objekt | Property |
-| Kanal | Channel |
-| Bokning | Booking |
-| Betalningspost | Payment |
-| Gäst | Guest |
-| Blockering | Blocking |
-| Uppgift / ärende | Task |
-| Ekonomipost | LedgerEntry |
-| Kanaladapter | ChannelAdapter |
-| Skuggbokning | ShadowBooking |
-| Villkorsbilaga | TermsAddendum |
-| Städuppgift | CleaningTask |
-| Städ | Cleaning |
-| Handpenning | Deposit |
-| Slutbetalning | FinalPayment |
-| Utbetalning | Payout |
-| Hyresavtal | RentalAgreement |
-| Bokningsbekräftelse | BookingConfirmation |
-| Husregler | HouseRules |
+| ----------------------- | -------------------------- |
+| Objekt                  | Property                   |
+| Kanal                   | Channel                    |
+| Bokning                 | Booking                    |
+| Betalningspost          | Payment                    |
+| Gäst                    | Guest                      |
+| Blockering              | Blocking                   |
+| Uppgift / ärende        | Task                       |
+| Ekonomipost             | LedgerEntry                |
+| Kanaladapter            | ChannelAdapter             |
+| Skuggbokning            | ShadowBooking              |
+| Villkorsbilaga          | TermsAddendum              |
+| Städuppgift             | CleaningTask               |
+| Städ                    | Cleaning                   |
+| Handpenning             | Deposit                    |
+| Slutbetalning           | FinalPayment               |
+| Utbetalning             | Payout                     |
+| Hyresavtal              | RentalAgreement            |
+| Bokningsbekräftelse     | BookingConfirmation        |
+| Husregler               | HouseRules                 |
 
 Booking status values (`förfrågan → erbjuden → bekräftad → incheckad →
 utcheckad → avslutad`) map to: `inquiry → offered → confirmed → checked_in →

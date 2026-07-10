@@ -60,6 +60,10 @@ infrastructure.
   them (see Payment entity notes in the design doc).
 - Airbnb sync is never assumed watertight — conflict detection and feed-health
   alerts are required, not optional.
+- Docs convention: operational/listing TODOs (adjust the listing, a specific
+  cleaning, "update the annons on channel X") are data the app manages — they
+  belong in the app as `Task`/`Property` records, not as Markdown here. Only
+  development TODOs live as Markdown; the roadmap is in `ROADMAP.md`.
 
 ## Version control
 

@@ -15,7 +15,6 @@ const timestamps = {
 		.default(sql`(current_timestamp)`)
 };
 
-// Objekt
 export const property = sqliteTable('property', {
 	id: id(),
 	name: text('name').notNull(),
@@ -24,11 +23,9 @@ export const property = sqliteTable('property', {
 	...timestamps
 });
 
-// Kanal
 export const channel = sqliteTable('channel', {
 	id: id(),
 	name: text('name').notNull().unique(),
-	// Kapabilitetsattribut - styr vilka dokument/uppgifter som genereras per bokning.
 	supportsPayment: integer('supports_payment', { mode: 'boolean' }).notNull().default(false),
 	contractCoverage: text('contract_coverage', { enum: ['full', 'partial', 'none'] })
 		.notNull()
@@ -43,7 +40,6 @@ export const channel = sqliteTable('channel', {
 	...timestamps
 });
 
-// Gäst
 export const guest = sqliteTable('guest', {
 	id: id(),
 	name: text('name').notNull(),
@@ -62,7 +58,6 @@ export const bookingStatusValues = [
 	'completed'
 ] as const;
 
-// Bokning
 export const booking = sqliteTable('booking', {
 	id: id(),
 	propertyId: text('property_id')
@@ -79,19 +74,16 @@ export const booking = sqliteTable('booking', {
 	cleaningFee: real('cleaning_fee'),
 	totalPrice: real('total_price'),
 	cancellationPolicy: text('cancellation_policy'),
-	// Skuggbokning: skapad från iCal-import, väntar på manuell komplettering med gästdata.
 	isShadow: integer('is_shadow', { mode: 'boolean' }).notNull().default(false),
 	externalRef: text('external_ref'),
 	...timestamps
 });
 
-// Betalningspost
 export const payment = sqliteTable('payment', {
 	id: id(),
 	bookingId: text('booking_id')
 		.notNull()
 		.references(() => booking.id),
-	// Gästbetalning och utbetalning-till-mig är separata tillstånd - se CLAUDE.md.
 	type: text('type', { enum: ['guest_payment', 'payout'] }).notNull(),
 	amount: real('amount').notNull(),
 	dueDate: text('due_date'),
@@ -103,7 +95,6 @@ export const payment = sqliteTable('payment', {
 	...timestamps
 });
 
-// Blockering
 export const blocking = sqliteTable('blocking', {
 	id: id(),
 	propertyId: text('property_id')
@@ -115,7 +106,6 @@ export const blocking = sqliteTable('blocking', {
 	...timestamps
 });
 
-// Uppgift / ärende
 export const task = sqliteTable('task', {
 	id: id(),
 	propertyId: text('property_id')
@@ -133,7 +123,6 @@ export const task = sqliteTable('task', {
 	...timestamps
 });
 
-// Ekonomipost
 export const ledgerEntry = sqliteTable('ledger_entry', {
 	id: id(),
 	propertyId: text('property_id')

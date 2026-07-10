@@ -2,7 +2,6 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import Database from 'better-sqlite3';
 import * as schema from './schema.ts';
 
-// Kanalernas kapabilitetsattribut - se docs/orkestreringssystem.md §2 och §6.
 const channels: (typeof schema.channel.$inferInsert)[] = [
 	{
 		name: 'Airbnb',

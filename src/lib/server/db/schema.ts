@@ -1,5 +1,10 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+// Relative import (not $lib) so the standalone seed script — which runs under
+// plain Node without SvelteKit's Vite resolver — can load this file too.
+import { bookingStatusValues } from '../../booking-status.ts';
+
+export { bookingStatusValues };
 
 const id = () =>
   text('id')
@@ -48,15 +53,6 @@ export const guest = sqliteTable('guest', {
   notes: text('notes'),
   ...timestamps
 });
-
-export const bookingStatusValues = [
-  'inquiry',
-  'offered',
-  'confirmed',
-  'checked_in',
-  'checked_out',
-  'completed'
-] as const;
 
 export const booking = sqliteTable('booking', {
   id: id(),

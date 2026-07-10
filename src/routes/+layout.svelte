@@ -9,6 +9,7 @@
     { href: '/', label: 'Dashboard' },
     { href: '/properties', label: 'Properties' },
     { href: '/bookings', label: 'Bookings' },
+    { href: '/blockings', label: 'Blockings' },
     { href: '/guests', label: 'Guests' }
   ] as const;
 

@@ -1,5 +1,8 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { bookingStatusValues } from '$lib/booking-status';
+
+export { bookingStatusValues };
 
 const id = () =>
   text('id')
@@ -48,15 +51,6 @@ export const guest = sqliteTable('guest', {
   notes: text('notes'),
   ...timestamps
 });
-
-export const bookingStatusValues = [
-  'inquiry',
-  'offered',
-  'confirmed',
-  'checked_in',
-  'checked_out',
-  'completed'
-] as const;
 
 export const booking = sqliteTable('booking', {
   id: id(),

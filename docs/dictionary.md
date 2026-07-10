@@ -7,7 +7,7 @@ naming, or terminology comes up, the answer belongs here.
 
 ## Core rule
 
-- Conversation and business discussion with the user happen in **Swedish**.
+- Conversation and business discussion with the user can happen in **Swedish**.
 - **Code, database schema, identifiers, comments, commit messages, and docs in
   this repo are always in English.** The one exception is design notes that
   quote the original discussion (e.g. `docs/orkestreringssystem.md`).

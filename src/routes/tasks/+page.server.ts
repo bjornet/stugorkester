@@ -5,7 +5,7 @@ import { property, task } from '$lib/server/db/schema';
 import { taskStatusValues } from '$lib/task-enums';
 import { isOneOf } from '$lib/server/forms';
 import { fail } from '@sveltejs/kit';
-import { asc, desc, eq } from 'drizzle-orm';
+import { asc, desc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -19,8 +19,9 @@ export const load: PageServerLoad = async ({ url }) => {
         property: { columns: { name: true } },
         booking: { columns: { checkIn: true, checkOut: true } }
       },
-      // Undated tasks sort after dated ones; then soonest deadline first.
-      orderBy: (t) => [asc(t.dueDate), desc(t.createdAt)]
+      // SQLite sorts NULLs first under plain ASC, so push undated tasks last
+      // explicitly; then soonest deadline first, newest as a tiebreak.
+      orderBy: (t) => [sql`${t.dueDate} is null`, asc(t.dueDate), desc(t.createdAt)]
     }),
     db.select({ id: property.id, name: property.name }).from(property).orderBy(asc(property.name)),
     db.query.booking.findMany({

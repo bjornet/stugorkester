@@ -1,4 +1,4 @@
-# stugorkester
+# Stugorkester
 
 Orchestration system for cabin rental management — see `ROADMAP.md` for what's
 next, `CLAUDE.md` for conventions, and `docs/orkestreringssystem.md` for the

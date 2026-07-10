@@ -8,6 +8,7 @@
     { href: resolve('/properties'), label: 'Properties', count: data.counts.properties },
     { href: resolve('/bookings'), label: 'Bookings', count: data.counts.bookings },
     { href: resolve('/blockings'), label: 'Blockings', count: data.counts.blockings },
+    { href: resolve('/tasks'), label: 'Open tasks', count: data.counts.openTasks },
     { href: resolve('/guests'), label: 'Guests', count: data.counts.guests }
   ]);
 </script>

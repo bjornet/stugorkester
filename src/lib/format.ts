@@ -10,7 +10,12 @@ export function money(amount: number | null | undefined): string {
   }).format(amount);
 }
 
+/** Turn a `snake_case` enum value into a spaced label ("in_progress" → "in progress"). */
+export function humanize(value: string): string {
+  return value.replace(/_/g, ' ');
+}
+
 /** Human label for a booking status enum value. */
 export function bookingStatusLabel(status: string): string {
-  return status.replace(/_/g, ' ');
+  return humanize(status);
 }

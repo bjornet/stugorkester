@@ -11,6 +11,7 @@
     { href: '/properties', label: 'Properties' },
     { href: '/bookings', label: 'Bookings' },
     { href: '/blockings', label: 'Blockings' },
+    { href: '/tasks', label: 'Tasks' },
     { href: '/guests', label: 'Guests' }
   ] as const;
 

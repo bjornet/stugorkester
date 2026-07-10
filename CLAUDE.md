@@ -23,37 +23,11 @@ are always in English.**
 
 When a Swedish business term is used in conversation or in a design doc, it
 must be translated to its English equivalent before it appears in code, schema,
-or database — never transliterated or used as-is. Use the glossary below as the
-canonical mapping; extend it here whenever a new Swedish term is introduced.
+or database — never transliterated or used as-is. The canonical mapping lives in
+[`docs/dictionary.md`](docs/dictionary.md).
 
-| Swedish (business term) | English (code/schema term) |
-| ----------------------- | -------------------------- |
-| Objekt                  | Property                   |
-| Kanal                   | Channel                    |
-| Bokning                 | Booking                    |
-| Betalningspost          | Payment                    |
-| Gäst                    | Guest                      |
-| Blockering              | Blocking                   |
-| Uppgift / ärende        | Task                       |
-| Ekonomipost             | LedgerEntry                |
-| Kanaladapter            | ChannelAdapter             |
-| Skuggbokning            | ShadowBooking              |
-| Villkorsbilaga          | TermsAddendum              |
-| Städuppgift             | CleaningTask               |
-| Städ                    | Cleaning                   |
-| Handpenning             | Deposit                    |
-| Slutbetalning           | FinalPayment               |
-| Utbetalning             | Payout                     |
-| Hyresavtal              | RentalAgreement            |
-| Bokningsbekräftelse     | BookingConfirmation        |
-| Husregler               | HouseRules                 |
-
-Booking status values (`förfrågan → erbjuden → bekräftad → incheckad →
-utcheckad → avslutad`) map to: `inquiry → offered → confirmed → checked_in →
-checked_out → completed`.
-
-If a new Swedish term shows up that isn't in the table, pick an English
-equivalent, add it to the table in the same change, and use it consistently.
+If a new Swedish term shows up that isn't in the dictionary, pick an English
+equivalent, add it there in the same change, and use it consistently.
 
 ## Tech stack
 

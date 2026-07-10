@@ -1,6 +1,8 @@
 import { relations, sql } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { bookingStatusValues } from '$lib/booking-status';
+// Relative import (not $lib) so the standalone seed script — which runs under
+// plain Node without SvelteKit's Vite resolver — can load this file too.
+import { bookingStatusValues } from '../../booking-status.ts';
 
 export { bookingStatusValues };
 

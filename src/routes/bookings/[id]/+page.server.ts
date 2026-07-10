@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
 import { detectConflicts } from '$lib/server/availability';
+import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { booking, channel, guest, property } from '$lib/server/db/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { asc, eq, sql } from 'drizzle-orm';
@@ -42,6 +43,8 @@ export const actions: Actions = {
       .update(booking)
       .set({ ...parsed.value, updatedAt: sql`(current_timestamp)` })
       .where(eq(booking.id, params.id));
+
+    await syncCleaningTaskForBooking(params.id);
 
     throw redirect(303, '/bookings');
   },

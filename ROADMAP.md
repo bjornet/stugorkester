@@ -30,6 +30,9 @@ Legend: ✅ done · ▶ in progress / next · ☐ not started.
   over bookings + blockings, with conflict detection.
 - **3 — Tasks/cleaning** Rule: confirmed booking auto-creates a cleaning task
   with deadline = next check-in; recurring maintenance tasks; task board.
+  _Design-system checkpoint:_ decide whether the growing surface (task board,
+  modals, richer forms) justifies moving to **shadcn-svelte** (Tailwind +
+  bits-ui). Until then, stay on the hand-rolled CSS in `+layout.svelte`.
 - **4 — Sync** `+server.ts` iCal export feed + a worker process (Effect) that
   polls Airbnb, creates shadow bookings, and raises feed-health/conflict alerts.
 - **5 — Docs & money** PDF generator (terms addendum, rental agreement, booking

@@ -1,25 +1,20 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
-  import BookingFields from '$lib/components/BookingFields.svelte';
+  import BlockingFields from '$lib/components/BlockingFields.svelte';
   import ConflictWarning from '$lib/components/ConflictWarning.svelte';
   import type { ActionData, PageData } from './$types';
 
   let { data, form }: { data: PageData; form: ActionData } = $props();
 
   // On a failed update, re-show what the user typed; otherwise the stored row.
-  const values = $derived(form?.values ?? data.booking);
+  const values = $derived(form?.values ?? data.blocking);
 </script>
 
-<p><a href={resolve('/bookings')}>← Bookings</a></p>
-<h1>Edit booking</h1>
+<p><a href={resolve('/blockings')}>← Blockings</a></p>
+<h1>Edit blocking</h1>
 
 <form class="stack" method="POST" action="?/update">
-  <BookingFields
-    properties={data.properties}
-    channels={data.channels}
-    guests={data.guests}
-    {values}
-  />
+  <BlockingFields properties={data.properties} {values} />
   {#if form?.error}
     <p class="error">{form.error}</p>
   {/if}
@@ -36,5 +31,5 @@
 
 <h2>Delete</h2>
 <form method="POST" action="?/delete">
-  <button class="danger" type="submit">Delete booking</button>
+  <button class="danger" type="submit">Delete blocking</button>
 </form>

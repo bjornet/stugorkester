@@ -24,5 +24,8 @@ jobs:
       - name: Typecheck (svelte-check)
         run: bun run check
 
+      - name: Test (vitest)
+        run: bun run test
+
       - name: Build
         run: bun run build

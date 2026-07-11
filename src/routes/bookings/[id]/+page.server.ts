@@ -1,5 +1,7 @@
 import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
+import { detectConflicts } from '$lib/server/availability';
+import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { booking, channel, guest, property } from '$lib/server/db/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { asc, eq, sql } from 'drizzle-orm';
@@ -20,15 +22,29 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions: Actions = {
   update: async ({ params, request }) => {
-    const parsed = parseBooking(await request.formData());
+    const data = await request.formData();
+    const parsed = parseBooking(data);
     if (!parsed.ok) {
       return fail(400, { error: parsed.error, values: parsed.values });
+    }
+
+    if (data.get('force') !== 'true') {
+      const conflicts = await detectConflicts(
+        parsed.value.propertyId,
+        { start: parsed.value.checkIn, end: parsed.value.checkOut },
+        params.id
+      );
+      if (conflicts.length > 0) {
+        return fail(409, { conflicts, values: parsed.value });
+      }
     }
 
     await db
       .update(booking)
       .set({ ...parsed.value, updatedAt: sql`(current_timestamp)` })
       .where(eq(booking.id, params.id));
+
+    await syncCleaningTaskForBooking(params.id);
 
     throw redirect(303, '/bookings');
   },

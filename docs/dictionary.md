@@ -51,6 +51,9 @@ schema, and the UI-facing English.
 | Betalningspost          | Payment                    |
 | Gäst                    | Guest                      |
 | Blockering              | Blocking                   |
+| Kalendervy              | Calendar                   |
+| Tillgänglighet          | Availability               |
+| Konfliktdetektering     | ConflictDetection          |
 | Uppgift / ärende        | Task                       |
 | Ekonomipost             | LedgerEntry                |
 | Kanaladapter            | ChannelAdapter             |

@@ -1,5 +1,7 @@
 import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
+import { detectConflicts } from '$lib/server/availability';
+import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { booking, channel, guest, property } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 import { asc, desc } from 'drizzle-orm';
@@ -25,12 +27,26 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
   create: async ({ request }) => {
-    const parsed = parseBooking(await request.formData());
+    const data = await request.formData();
+    const parsed = parseBooking(data);
     if (!parsed.ok) {
       return fail(400, { error: parsed.error, values: parsed.values });
     }
 
-    await db.insert(booking).values(parsed.value);
+    // Conflict detection alerts but does not block (design §4.2): the system
+    // is the source of truth, so the user can override with "Save anyway".
+    if (data.get('force') !== 'true') {
+      const conflicts = await detectConflicts(parsed.value.propertyId, {
+        start: parsed.value.checkIn,
+        end: parsed.value.checkOut
+      });
+      if (conflicts.length > 0) {
+        return fail(409, { conflicts, values: parsed.value });
+      }
+    }
+
+    const [created] = await db.insert(booking).values(parsed.value).returning({ id: booking.id });
+    await syncCleaningTaskForBooking(created.id);
     return { created: true };
   }
 };

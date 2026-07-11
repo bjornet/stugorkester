@@ -7,8 +7,11 @@
 
   const links = [
     { href: '/', label: 'Dashboard' },
+    { href: '/calendar', label: 'Calendar' },
     { href: '/properties', label: 'Properties' },
     { href: '/bookings', label: 'Bookings' },
+    { href: '/blockings', label: 'Blockings' },
+    { href: '/tasks', label: 'Tasks' },
     { href: '/guests', label: 'Guests' }
   ] as const;
 
@@ -151,6 +154,11 @@
   :global(.error) {
     color: var(--danger);
     font-size: 0.85rem;
+  }
+
+  :global(.actions) {
+    display: flex;
+    gap: 0.75rem;
   }
 
   :global(.muted) {

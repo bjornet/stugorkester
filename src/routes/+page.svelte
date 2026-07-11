@@ -7,12 +7,17 @@
   const cards = $derived([
     { href: resolve('/properties'), label: 'Properties', count: data.counts.properties },
     { href: resolve('/bookings'), label: 'Bookings', count: data.counts.bookings },
+    { href: resolve('/blockings'), label: 'Blockings', count: data.counts.blockings },
+    { href: resolve('/tasks'), label: 'Open tasks', count: data.counts.openTasks },
     { href: resolve('/guests'), label: 'Guests', count: data.counts.guests }
   ]);
 </script>
 
 <h1>Dashboard</h1>
-<p class="muted">Source of truth for cabin rentals. Manage properties, bookings and guests here.</p>
+<p class="muted">
+  Source of truth for cabin rentals. Manage properties, bookings and guests here, or open the
+  <a href={resolve('/calendar')}>calendar</a> for an availability overview.
+</p>
 
 <div class="cards">
   {#each cards as card (card.href)}

@@ -3,8 +3,9 @@ import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 // Relative import (not $lib) so the standalone seed script — which runs under
 // plain Node without SvelteKit's Vite resolver — can load this file too.
 import { bookingStatusValues } from '../../booking-status.ts';
+import { taskStatusValues, taskTypeValues } from '../../task-enums.ts';
 
-export { bookingStatusValues };
+export { bookingStatusValues, taskStatusValues, taskTypeValues };
 
 const id = () =>
   text('id')
@@ -108,13 +109,11 @@ export const task = sqliteTable('task', {
     .notNull()
     .references(() => property.id),
   bookingId: text('booking_id').references(() => booking.id),
-  type: text('type', { enum: ['cleaning', 'maintenance', 'listing_update', 'other'] }).notNull(),
+  type: text('type', { enum: taskTypeValues }).notNull(),
   title: text('title').notNull(),
   description: text('description'),
   dueDate: text('due_date'),
-  status: text('status', { enum: ['pending', 'in_progress', 'done'] })
-    .notNull()
-    .default('pending'),
+  status: text('status', { enum: taskStatusValues }).notNull().default('pending'),
   assignee: text('assignee'),
   ...timestamps
 });

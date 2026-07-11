@@ -3,20 +3,20 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** tasks & cleaning flow done — the app is runnable and usable locally.
+**Status now:** through Phase 3, plus the Phase 4 iCal export feed — the app is runnable and usable locally.
 **▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
 
-| Phase | Goal                       | You can test-run…                                         | Status  |
-| ----- | -------------------------- | --------------------------------------------------------- | ------- |
-| 0     | Foundation                 | —                                                         | ✅ Done |
-| 1     | First vertical slice: CRUD | Create a property, add/list bookings (`bun run dev`)      | ✅ Done |
-| 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done |
-| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
-| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ▶ Next  |
-| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ☐       |
-| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐       |
+| Phase | Goal                       | You can test-run…                                         | Status        |
+| ----- | -------------------------- | --------------------------------------------------------- | ------------- |
+| 0     | Foundation                 | —                                                         | ✅ Done       |
+| 1     | First vertical slice: CRUD | Create a property, add/list bookings (`bun run dev`)      | ✅ Done       |
+| 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done       |
+| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done       |
+| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ◑ Export done |
+| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ☐             |
+| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐             |
 
-Legend: ✅ done · ▶ in progress / next · ☐ not started.
+Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started.
 
 ## What each phase adds
 
@@ -38,8 +38,11 @@ Legend: ✅ done · ▶ in progress / next · ☐ not started.
   (task board, richer forms). Decide whether that justifies moving to
   **shadcn-svelte** (Tailwind + bits-ui). Left on the hand-rolled CSS in
   `+layout.svelte` for now — this is a deliberate call to make, not to automate.
-- **4 — Sync** `+server.ts` iCal export feed + a worker process (Effect) that
-  polls Airbnb, creates shadow bookings, and raises feed-health/conflict alerts.
+- **4 — Sync ◑** _Done:_ per-property iCal **export** feed at
+  `/properties/[id]/calendar.ics` — committed bookings + blockings as busy
+  all-day events, no guest data, tentative holds excluded.
+  _Not yet:_ the worker process (Effect) that polls Airbnb's feed, creates
+  shadow bookings, and raises feed-health/conflict alerts.
 - **5 — Docs & money** PDF generator (terms addendum, rental agreement, booking
   confirmation, receipt) + ledger and per-channel yearly tax summary.
 - **6 — Notify & ship** Email (Nodemailer), reminders (missing payout, broken

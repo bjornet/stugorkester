@@ -59,7 +59,8 @@ bun run dev                  # http://localhost:5173
 ```
 
 Then create a property, add bookings and blockings, and open **Calendar** to
-see them. Overlapping dates raise a conflict warning you can override.
+see them. Overlapping dates raise a conflict warning you can override. For a
+guided tour and a QA checklist, see [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md).
 
 Checks: `bun run lint`, `bun run check`, `bun run test`, `bun run build`.
 

@@ -42,6 +42,9 @@ Work top-to-bottom; each step builds on the previous one.
 6. **Properties → (your cabin)** → at the bottom, copy the **iCal feed URL**
    (`/properties/<id>/calendar.ics`) that Airbnb and other channels subscribe
    to.
+7. **Feeds** → register a channel's iCal URL to import from, then run
+   `bun run worker:once` to pull its busy dates in as shadow bookings. The
+   feed's health (OK / stale / error) is shown here.
 
 ## Part 2 — QA checklist
 
@@ -91,6 +94,22 @@ Expected results assume a single property unless stated.
       is exclusive (matches the half-open checkout day).
 - [ ] Carries **no guest data** — summaries are just "Booked" / "Blocked".
 - [ ] **Tentative** bookings (inquiry/offered) are **excluded** from the feed.
+
+### Import worker (`bun run worker:once`)
+
+A quick loopback: point a feed at another property's export URL, then run the
+worker. (Under **Feeds**, add a feed on property B whose URL is property A's
+`/properties/<A>/calendar.ics`.)
+
+- [ ] After one run, property B has **shadow bookings** matching A's busy dates.
+- [ ] Running again imports nothing new (idempotent); the feed's health shows a
+      recent **last success**.
+- [ ] Removing a stay on the source and re-running **deletes** the matching
+      shadow booking; moving its dates **updates** it.
+- [ ] A firm (non-shadow) booking on B overlapping an imported date creates a
+      **"Sync conflict…" task** (once, not on every poll).
+- [ ] A feed with a bad URL records an **error** in its health and does **not**
+      stop other feeds from syncing.
 
 ## Part 3 — Automated checks
 

@@ -103,6 +103,26 @@ export const blocking = sqliteTable('blocking', {
   ...timestamps
 });
 
+export const channelFeed = sqliteTable('channel_feed', {
+  id: id(),
+  propertyId: text('property_id')
+    .notNull()
+    .references(() => property.id),
+  channelId: text('channel_id')
+    .notNull()
+    .references(() => channel.id),
+  // The channel's iCal export URL for this property's listing (design §2).
+  url: text('url').notNull(),
+  active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  // Feed-health tracking: lastPolledAt is every attempt, lastSuccessAt only
+  // successful fetch+parse, lastError the most recent failure message. A feed
+  // whose lastSuccessAt is stale is the classic silent iCal failure (§4.2).
+  lastPolledAt: text('last_polled_at'),
+  lastSuccessAt: text('last_success_at'),
+  lastError: text('last_error'),
+  ...timestamps
+});
+
 export const task = sqliteTable('task', {
   id: id(),
   propertyId: text('property_id')
@@ -138,12 +158,19 @@ export const propertyRelations = relations(property, ({ many }) => ({
   bookings: many(booking),
   blockings: many(blocking),
   tasks: many(task),
+  feeds: many(channelFeed),
   ledgerEntries: many(ledgerEntry)
 }));
 
 export const channelRelations = relations(channel, ({ many }) => ({
   bookings: many(booking),
+  feeds: many(channelFeed),
   ledgerEntries: many(ledgerEntry)
+}));
+
+export const channelFeedRelations = relations(channelFeed, ({ one }) => ({
+  property: one(property, { fields: [channelFeed.propertyId], references: [property.id] }),
+  channel: one(channel, { fields: [channelFeed.channelId], references: [channel.id] })
 }));
 
 export const guestRelations = relations(guest, ({ many }) => ({

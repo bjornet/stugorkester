@@ -46,6 +46,8 @@
     "@fullcalendar/core": "^6.1.21",
     "@fullcalendar/daygrid": "^6.1.21",
     "better-sqlite3": "^12.10.0",
-    "ical-generator": "^11.0.0"
+    "effect": "^3.21.4",
+    "ical-generator": "^11.0.0",
+    "node-ical": "^0.26.1"
   }
 }

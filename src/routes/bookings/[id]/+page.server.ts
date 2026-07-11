@@ -2,7 +2,8 @@ import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
 import { detectConflicts } from '$lib/server/availability';
 import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
-import { booking, channel, guest, property } from '$lib/server/db/schema';
+import { syncLedgerForBooking } from '$lib/server/ledger';
+import { booking, channel, guest, ledgerEntry, property } from '$lib/server/db/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { asc, eq, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -45,11 +46,14 @@ export const actions: Actions = {
       .where(eq(booking.id, params.id));
 
     await syncCleaningTaskForBooking(params.id);
+    await syncLedgerForBooking(params.id);
 
     throw redirect(303, '/bookings');
   },
 
   delete: async ({ params }) => {
+    // Remove booking-derived ledger entries so economy totals stay accurate.
+    await db.delete(ledgerEntry).where(eq(ledgerEntry.bookingId, params.id));
     await db.delete(booking).where(eq(booking.id, params.id));
     throw redirect(303, '/bookings');
   }

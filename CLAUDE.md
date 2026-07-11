@@ -17,9 +17,9 @@ Full design notes: `docs/orkestreringssystem.md`.
 
 ## Language rule (non-negotiable)
 
-Conversation and business discussion with the user happens in Swedish. **Code,
-database schema, identifiers, comments, commit messages, and docs in this repo
-are always in English.**
+English is the default for conversation and business discussion with the user;
+Swedish is fine when the user prefers it. **Code, database schema, identifiers,
+comments, commit messages, and docs in this repo are always in English.**
 
 When a Swedish business term is used in conversation or in a design doc, it
 must be translated to its English equivalent before it appears in code, schema,

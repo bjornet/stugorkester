@@ -40,3 +40,19 @@ export function isIsoDate(value: string): boolean {
   const parsed = new Date(`${value}T00:00:00Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().startsWith(value);
 }
+
+/** True for a syntactically valid http(s) URL. */
+export function isHttpUrl(value: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  return url.protocol === 'http:' || url.protocol === 'https:';
+}
+
+/** True when a checkbox field was submitted as checked. */
+export function checkbox(data: FormData, key: string): boolean {
+  return data.get(key) != null;
+}

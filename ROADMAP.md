@@ -3,18 +3,18 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** through Phase 3, plus the Phase 4 iCal export feed — the app is runnable and usable locally.
+**Status now:** through Phase 4 (iCal export + import worker) — the app is runnable and usable locally.
 **▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
 
-| Phase | Goal                       | You can test-run…                                         | Status        |
-| ----- | -------------------------- | --------------------------------------------------------- | ------------- |
-| 0     | Foundation                 | —                                                         | ✅ Done       |
-| 1     | First vertical slice: CRUD | Create a property, add/list bookings (`bun run dev`)      | ✅ Done       |
-| 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done       |
-| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done       |
-| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ◑ Export done |
-| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ☐             |
-| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐             |
+| Phase | Goal                       | You can test-run…                                         | Status  |
+| ----- | -------------------------- | --------------------------------------------------------- | ------- |
+| 0     | Foundation                 | —                                                         | ✅ Done |
+| 1     | First vertical slice: CRUD | Create a property, add/list bookings (`bun run dev`)      | ✅ Done |
+| 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done |
+| 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
+| 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ✅ Done |
+| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ▶ Next  |
+| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐       |
 
 Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started.
 
@@ -38,11 +38,15 @@ Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started
   (task board, richer forms). Decide whether that justifies moving to
   **shadcn-svelte** (Tailwind + bits-ui). Left on the hand-rolled CSS in
   `+layout.svelte` for now — this is a deliberate call to make, not to automate.
-- **4 — Sync ◑** _Done:_ per-property iCal **export** feed at
-  `/properties/[id]/calendar.ics` — committed bookings + blockings as busy
-  all-day events, no guest data, tentative holds excluded.
-  _Not yet:_ the worker process (Effect) that polls Airbnb's feed, creates
-  shadow bookings, and raises feed-health/conflict alerts.
+- **4 — Sync ✅** Per-property iCal **export** feed at
+  `/properties/[id]/calendar.ics` (committed bookings + blockings as busy
+  all-day events, no guest data, tentative holds excluded), plus an **import
+  worker**: register channel feeds under `/feeds`, and a separate Node process
+  (`bun run worker`, Effect + `Schedule`) polls them with timeout/retry, imports
+  busy dates as shadow bookings via a pure diff (`src/lib/sync/`, unit-tested),
+  flags overlaps with firm bookings/blockings as conflict tasks, and tracks
+  feed health. _Not yet:_ recurring maintenance-task scheduling could ride on
+  this worker (see Phase 3).
 - **5 — Docs & money** PDF generator (terms addendum, rental agreement, booking
   confirmation, receipt) + ledger and per-channel yearly tax summary.
 - **6 — Notify & ship** Email (Nodemailer), reminders (missing payout, broken
@@ -58,8 +62,17 @@ bun run db:seed              # seed the channels (Airbnb, Stugknuten, …)
 bun run dev                  # http://localhost:5173
 ```
 
+To import channel feeds, register them under **Feeds** and run the worker
+alongside the app (a separate Node process; `--once` does a single pass):
+
+```sh
+bun run worker               # poll active feeds on a loop
+bun run worker:once          # single pass, then exit
+```
+
 Then create a property, add bookings and blockings, and open **Calendar** to
-see them. Overlapping dates raise a conflict warning you can override.
+see them. Overlapping dates raise a conflict warning you can override. For a
+guided tour and a QA checklist, see [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md).
 
 Checks: `bun run lint`, `bun run check`, `bun run test`, `bun run build`.
 

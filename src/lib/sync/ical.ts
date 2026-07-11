@@ -1,4 +1,8 @@
-import { sync, type VEvent } from 'node-ical';
+// node-ical is CommonJS, so it must be imported via its default export (a
+// named `{ sync }` import fails at runtime under Node ESM). The VEvent type is
+// erased at runtime, so it can come through a type-only import.
+import ical from 'node-ical';
+import type { VEvent } from 'node-ical';
 import type { FeedEvent } from './diff';
 
 // node-ical parses `VALUE=DATE` all-day events as UTC midnight, so the UTC
@@ -14,7 +18,7 @@ function toYmd(d: Date): string {
  * are skipped.
  */
 export function parseIcalFeed(icsText: string): FeedEvent[] {
-  const parsed = sync.parseICS(icsText);
+  const parsed = ical.sync.parseICS(icsText);
   const events: FeedEvent[] = [];
 
   for (const component of Object.values(parsed)) {

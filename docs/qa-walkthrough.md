@@ -45,6 +45,11 @@ Work top-to-bottom; each step builds on the previous one.
 7. **Feeds** → register a channel's iCal URL to import from, then run
    `bun run worker:once` to pull its busy dates in as shadow bookings. The
    feed's health (OK / stale / error) is shown here.
+8. **Economy** → the confirmed booking's income, commission, and net show under
+   its channel for the year, with a tax estimate.
+9. **Bookings → (a booking) → Generate documents** → open the channel-appropriate
+   documents (e.g. terms addendum or rental agreement) and use the browser's
+   “Save as PDF”.
 
 ## Part 2 — QA checklist
 
@@ -110,6 +115,22 @@ worker. (Under **Feeds**, add a feed on property B whose URL is property A's
       **"Sync conflict…" task** (once, not on every poll).
 - [ ] A feed with a bad URL records an **error** in its health and does **not**
       stop other feeds from syncing.
+
+### Economy (`/economy`)
+
+- [ ] Confirming a priced booking posts income, commission (channel rate), and
+      net under its channel for the checkout year; re-saving doesn't duplicate.
+- [ ] Downgrading the booking to tentative, or deleting it, removes its entries.
+- [ ] A 0%-commission channel (e.g. Stugnet) shows commission 0 and net = income.
+- [ ] The tax estimate deducts 40 000 kr + 20% and taxes the surplus at 30%.
+
+### Documents (`/bookings/<id>/documents`)
+
+- [ ] The document set matches the channel: partial-contract → terms addendum;
+      no-contract → rental agreement; no channel payment → confirmation +
+      receipt; check-in info always.
+- [ ] Opening a document renders it with the booking's data; **Print / Save as
+      PDF** produces a clean page with no app navigation.
 
 ## Part 3 — Automated checks
 

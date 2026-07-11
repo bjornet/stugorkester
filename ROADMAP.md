@@ -3,7 +3,7 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** through Phase 4 (iCal export + import worker) — the app is runnable and usable locally.
+**Status now:** through Phase 5 (documents + economy) — the app is runnable and usable locally.
 **▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
 
 | Phase | Goal                       | You can test-run…                                         | Status  |
@@ -13,8 +13,8 @@ Full design: `docs/orkestreringssystem.md`.
 | 2     | Calendar + availability    | See bookings/blocks on a calendar; get overlap warnings   | ✅ Done |
 | 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
 | 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ✅ Done |
-| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ▶ Next  |
-| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ☐       |
+| 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ✅ Done |
+| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ▶ Next  |
 
 Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started.
 
@@ -47,8 +47,14 @@ Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started
   flags overlaps with firm bookings/blockings as conflict tasks, and tracks
   feed health. _Not yet:_ recurring maintenance-task scheduling could ride on
   this worker (see Phase 3).
-- **5 — Docs & money** PDF generator (terms addendum, rental agreement, booking
-  confirmation, receipt) + ledger and per-channel yearly tax summary.
+- **5 — Docs & money ✅** Per-booking document generation from the booking's
+  edit page: the set (terms addendum, rental agreement, booking confirmation,
+  receipt, check-in info) is chosen from the channel's capability attributes
+  (`src/lib/documents.ts`, unit-tested) and rendered as print-optimised pages
+  the host saves as PDF. Plus **economy** (`/economy`): confirming a booking
+  auto-posts income/commission/net ledger entries, summarised per channel per
+  year with a standard-deduction tax estimate. _Deferred:_ server-side PDF
+  files (Puppeteer) — pairs with email attachments in Phase 6.
 - **6 — Notify & ship** Email (Nodemailer), reminders (missing payout, broken
   feed), deploy to a small VPS for 24/7 iCal reachability.
 

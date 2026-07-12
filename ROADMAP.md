@@ -82,6 +82,33 @@ guided tour and a QA checklist, see [`docs/qa-walkthrough.md`](docs/qa-walkthrou
 
 Checks: `bun run lint`, `bun run check`, `bun run test`, `bun run build`.
 
+## Backlog & follow-ups
+
+Non-phase work to pick up later.
+
+- **Functional util library.** Evaluate **Ramda** — or a more TypeScript-friendly
+  functional library (e.g. **Remeda** or **es-toolkit**) — for the pure logic
+  modules (`availability`, `sync/diff`, `economy`, `documents`, `cleaning`).
+  Weigh types/ergonomics against the "boring technology" principle and bundle
+  size before adopting.
+- **QA & familiarisation (once all phases land).** Before building further, set
+  aside time to QA the whole system end to end (see
+  [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md)) and get familiar with the
+  codebase. **Claude: remind me of this the moment Phase 6 is done.**
+- **Multi-angle codebase review.** Critique what's been built so far from several
+  angles, and act on the findings:
+  1. **Design** — architecture, data model, module boundaries, the Effect
+     scoping, the sync/worker split.
+  2. **UX** — flows, forms, feedback/empty states, mobile friendliness.
+  3. **DRY vs WET** — real duplication vs premature abstraction (the per-entity
+     `*-form.ts` parsers and `*Fields.svelte` components are prime candidates).
+  4. **Scale patterns** — what to introduce so the codebase scales: a shared
+     validation approach, typed error handling, a service/repository layer,
+     auth/multi-user, pagination, migrations discipline.
+  5. **Deletable code** — (a) features built but not actually needed in the
+     foreseeable future, and (b) junk lying around (dead code, stale comments,
+     unused deps).
+
 ## Where TODOs live (convention)
 
 - **Operational / listing TODOs** (adjust the listing, a specific cleaning, "update

@@ -1,0 +1,1 @@
+ALTER TABLE `channel_feed` ADD `last_alerted_at` text;

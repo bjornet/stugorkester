@@ -5,6 +5,7 @@
 import { Duration, Effect, Schedule } from 'effect';
 import { createDb } from '../lib/server/db/client.ts';
 import { syncAllFeeds, type SyncResult } from '../lib/sync/sync.ts';
+import { alertUnhealthyFeeds } from '../lib/sync/alerts.ts';
 
 const url = process.env.DATABASE_URL;
 if (!url) {
@@ -33,7 +34,16 @@ function report(results: SyncResult[]): void {
   }
 }
 
-const runOnce = syncAllFeeds(db).pipe(Effect.tap((results) => Effect.sync(() => report(results))));
+const runOnce = syncAllFeeds(db).pipe(
+  Effect.tap((results) => Effect.sync(() => report(results))),
+  // After importing, alert on any feeds that are stale or erroring.
+  Effect.flatMap(() => Effect.promise(() => alertUnhealthyFeeds(db, Date.now()))),
+  Effect.tap((alerted) =>
+    Effect.sync(() => {
+      if (alerted > 0) console.log(`[notify] alerted about ${alerted} unhealthy feed(s)`);
+    })
+  )
+);
 
 const program: Effect.Effect<unknown> = once
   ? runOnce

@@ -32,10 +32,14 @@ export function feedHealth(
   staleHours: number = DEFAULT_STALE_HOURS
 ): FeedHealth {
   if (!feed.active) return 'paused';
+  // The latest poll failed if there's an error and no later success — this
+  // takes precedence over "pending" so a feed that has only ever errored still
+  // reads as error, not merely not-yet-fetched.
+  const erroredOnLatestPoll =
+    feed.lastError != null &&
+    (!feed.lastSuccessAt || (feed.lastPolledAt != null && feed.lastPolledAt > feed.lastSuccessAt));
+  if (erroredOnLatestPoll) return 'error';
   if (!feed.lastSuccessAt) return 'pending';
-  if (feed.lastError && feed.lastPolledAt && feed.lastPolledAt > feed.lastSuccessAt) {
-    return 'error';
-  }
   if (hoursBetween(feed.lastSuccessAt, nowMs) > staleHours) return 'stale';
   return 'ok';
 }

@@ -1,4 +1,8 @@
 <script lang="ts">
+  // Documents render as print-optimised HTML; the host uses the browser's
+  // "Save as PDF". This keeps deployment light (no headless Chromium on the
+  // VPS). Possible later work: generate server-side PDF files (Puppeteer or
+  // pdfkit), most useful once Phase 6 emails documents as attachments.
   import { resolve } from '$app/paths';
   import type { PageData } from './$types';
 

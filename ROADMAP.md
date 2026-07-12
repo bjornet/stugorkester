@@ -3,8 +3,8 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** through Phase 5 (documents + economy) — the app is runnable and usable locally.
-**▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
+**Status now:** all phases (0–6) complete — the app is runnable locally and ready to deploy.
+**▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)); deploy via [`docs/deploy.md`](docs/deploy.md).
 
 | Phase | Goal                       | You can test-run…                                         | Status  |
 | ----- | -------------------------- | --------------------------------------------------------- | ------- |
@@ -14,7 +14,7 @@ Full design: `docs/orkestreringssystem.md`.
 | 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
 | 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ✅ Done |
 | 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ✅ Done |
-| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ▶ Next  |
+| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ✅ Done |
 
 Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started.
 
@@ -55,8 +55,14 @@ Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started
   auto-posts income/commission/net ledger entries, summarised per channel per
   year with a standard-deduction tax estimate. _Deferred:_ server-side PDF
   files (Puppeteer) — pairs with email attachments in Phase 6.
-- **6 — Notify & ship** Email (Nodemailer), reminders (missing payout, broken
-  feed), deploy to a small VPS for 24/7 iCal reachability.
+- **6 — Notify & ship ✅** Email via Nodemailer (`src/lib/notify/`, SMTP from
+  env with a dev log-only fallback; message builders unit-tested). The worker
+  emails a throttled digest of stale/erroring feeds after each poll (design
+  §4.2). Deploy runbook in [`docs/deploy.md`](docs/deploy.md): two Node
+  processes (web + worker) sharing one SQLite file, behind a TLS reverse proxy
+  for 24/7 feed reachability. _Not yet:_ the "missing payout X days after
+  checkout" reminder — needs payout/payment tracking, which isn't modelled in
+  the UI yet (a good first item for the next round of work).
 
 ## Running locally
 
@@ -81,6 +87,33 @@ see them. Overlapping dates raise a conflict warning you can override. For a
 guided tour and a QA checklist, see [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md).
 
 Checks: `bun run lint`, `bun run check`, `bun run test`, `bun run build`.
+
+## Backlog & follow-ups
+
+Non-phase work to pick up later.
+
+- **Functional util library.** Evaluate **Ramda** — or a more TypeScript-friendly
+  functional library (e.g. **Remeda** or **es-toolkit**) — for the pure logic
+  modules (`availability`, `sync/diff`, `economy`, `documents`, `cleaning`).
+  Weigh types/ergonomics against the "boring technology" principle and bundle
+  size before adopting.
+- **QA & familiarisation (once all phases land).** Before building further, set
+  aside time to QA the whole system end to end (see
+  [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md)) and get familiar with the
+  codebase. **Claude: remind me of this the moment Phase 6 is done.**
+- **Multi-angle codebase review.** Critique what's been built so far from several
+  angles, and act on the findings:
+  1. **Design** — architecture, data model, module boundaries, the Effect
+     scoping, the sync/worker split.
+  2. **UX** — flows, forms, feedback/empty states, mobile friendliness.
+  3. **DRY vs WET** — real duplication vs premature abstraction (the per-entity
+     `*-form.ts` parsers and `*Fields.svelte` components are prime candidates).
+  4. **Scale patterns** — what to introduce so the codebase scales: a shared
+     validation approach, typed error handling, a service/repository layer,
+     auth/multi-user, pagination, migrations discipline.
+  5. **Deletable code** — (a) features built but not actually needed in the
+     foreseeable future, and (b) junk lying around (dead code, stale comments,
+     unused deps).
 
 ## Where TODOs live (convention)
 

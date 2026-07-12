@@ -120,6 +120,8 @@ export const channelFeed = sqliteTable('channel_feed', {
   lastPolledAt: text('last_polled_at'),
   lastSuccessAt: text('last_success_at'),
   lastError: text('last_error'),
+  // When we last emailed an alert about this feed, to throttle repeats.
+  lastAlertedAt: text('last_alerted_at'),
   ...timestamps
 });
 

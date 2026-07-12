@@ -27,6 +27,16 @@ describe('feedHealth', () => {
     expect(feedHealth({ ...base, lastSuccessAt: '2026-07-11T00:00:00Z' }, NOW)).toBe('stale');
   });
 
+  it('is error when it has only ever errored (never succeeded)', () => {
+    const feed: FeedHealthInput = {
+      active: true,
+      lastSuccessAt: null,
+      lastPolledAt: '2026-07-11T11:00:00Z',
+      lastError: 'HTTP 404'
+    };
+    expect(feedHealth(feed, NOW)).toBe('error');
+  });
+
   it('is error when the latest poll attempt failed after the last success', () => {
     const feed: FeedHealthInput = {
       active: true,

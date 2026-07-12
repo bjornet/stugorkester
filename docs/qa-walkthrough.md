@@ -115,6 +115,9 @@ worker. (Under **Feeds**, add a feed on property B whose URL is property A's
       **"Sync conflict…" task** (once, not on every poll).
 - [ ] A feed with a bad URL records an **error** in its health and does **not**
       stop other feeds from syncing.
+- [ ] With `ALERT_EMAIL_TO` set, an unhealthy feed makes the worker log/send a
+      digest email once, then stay quiet on the next run (24h throttle). Without
+      `SMTP_URL` it logs the message instead of sending.
 
 ### Economy (`/economy`)
 

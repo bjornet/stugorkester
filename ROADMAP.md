@@ -3,8 +3,8 @@
 The shortest view of where development stands and when you can test-run the app.
 Full design: `docs/orkestreringssystem.md`.
 
-**Status now:** through Phase 5 (documents + economy) — the app is runnable and usable locally.
-**▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)).
+**Status now:** all phases (0–6) complete — the app is runnable locally and ready to deploy.
+**▶ Runnable now:** `bun run dev` (see [Running locally](#running-locally)); deploy via [`docs/deploy.md`](docs/deploy.md).
 
 | Phase | Goal                       | You can test-run…                                         | Status  |
 | ----- | -------------------------- | --------------------------------------------------------- | ------- |
@@ -14,7 +14,7 @@ Full design: `docs/orkestreringssystem.md`.
 | 3     | Tasks & cleaning flow      | Confirm a booking → cleaning task auto-appears; task list | ✅ Done |
 | 4     | iCal export + worker       | Subscribe Airbnb to your feed; import Airbnb bookings     | ✅ Done |
 | 5     | Documents & economy        | Generate a terms-addendum PDF; yearly income per channel  | ✅ Done |
-| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ▶ Next  |
+| 6     | Notifications & deploy     | Email reminders; 24/7 iCal reachability on a VPS          | ✅ Done |
 
 Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started.
 
@@ -55,8 +55,14 @@ Legend: ✅ done · ◑ partly done · ▶ in progress / next · ☐ not started
   auto-posts income/commission/net ledger entries, summarised per channel per
   year with a standard-deduction tax estimate. _Deferred:_ server-side PDF
   files (Puppeteer) — pairs with email attachments in Phase 6.
-- **6 — Notify & ship** Email (Nodemailer), reminders (missing payout, broken
-  feed), deploy to a small VPS for 24/7 iCal reachability.
+- **6 — Notify & ship ✅** Email via Nodemailer (`src/lib/notify/`, SMTP from
+  env with a dev log-only fallback; message builders unit-tested). The worker
+  emails a throttled digest of stale/erroring feeds after each poll (design
+  §4.2). Deploy runbook in [`docs/deploy.md`](docs/deploy.md): two Node
+  processes (web + worker) sharing one SQLite file, behind a TLS reverse proxy
+  for 24/7 feed reachability. _Not yet:_ the "missing payout X days after
+  checkout" reminder — needs payout/payment tracking, which isn't modelled in
+  the UI yet (a good first item for the next round of work).
 
 ## Running locally
 

@@ -42,9 +42,10 @@ Work top-to-bottom; each step builds on the previous one.
 6. **Properties → (your cabin)** → at the bottom, copy the **iCal feed URL**
    (`/properties/<id>/calendar.ics`) that Airbnb and other channels subscribe
    to.
-7. **Feeds** → register a channel's iCal URL to import from, then run
-   `bun run worker:once` to pull its busy dates in as shadow bookings. The
-   feed's health (OK / stale / error) is shown here.
+7. **Feeds** → register a channel's iCal URL to import from (leave **Active**
+   checked), then run `bun run worker:once` to pull its busy dates in as shadow
+   bookings. The feed's health (OK / stale / error) is shown here. See the
+   Import-worker checklist below for a ready-made loopback setup.
 8. **Economy** → the confirmed booking's income, commission, and net show under
    its channel for the year, with a tax estimate.
 9. **Bookings → (a booking) → Generate documents** → open the channel-appropriate
@@ -102,9 +103,17 @@ Expected results assume a single property unless stated.
 
 ### Import worker (`bun run worker:once`)
 
-A quick loopback: point a feed at another property's export URL, then run the
-worker. (Under **Feeds**, add a feed on property B whose URL is property A's
-`/properties/<A>/calendar.ics`.)
+A quick loopback that reuses the app's own export feed. Set it up first:
+
+1. Two properties — **A** with a confirmed, priced booking or two, and **B**
+   (empty).
+2. Copy **A**'s feed URL from its property page — a full URL including your dev
+   host/port, e.g. `http://localhost:5173/properties/<A-id>/calendar.ics`.
+3. **Feeds → Add feed:** property **B**, any channel, that URL, and leave
+   **Active** checked. (An inactive feed is skipped — the worker just logs
+   `sync: no active feeds`.)
+
+Then, with `bun run dev` still running, `bun run worker:once`:
 
 - [ ] After one run, property B has **shadow bookings** matching A's busy dates.
 - [ ] Running again imports nothing new (idempotent); the feed's health shows a

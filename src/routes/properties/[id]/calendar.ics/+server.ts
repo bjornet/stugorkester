@@ -1,14 +1,10 @@
 import { db } from '$lib/server/db';
 import { blocking, booking, property } from '$lib/server/db/schema';
-import type { BookingStatus } from '$lib/booking-status';
+import { committedBookingStatuses } from '$lib/booking-status';
 import { error } from '@sveltejs/kit';
 import { and, eq, inArray } from 'drizzle-orm';
 import ical, { ICalCalendarMethod } from 'ical-generator';
 import type { RequestHandler } from './$types';
-
-// Only committed bookings block the exported calendar. A tentative hold
-// (inquiry/offered) must not block dates on Airbnb before it is confirmed.
-const COMMITTED_STATUSES: BookingStatus[] = ['confirmed', 'checked_in', 'checked_out', 'completed'];
 
 /** Parse a stored `YYYY-MM-DD` as UTC midnight so the all-day date can't drift. */
 function asUtcDate(date: string): Date {
@@ -27,7 +23,9 @@ export const GET: RequestHandler = async ({ params }) => {
     db
       .select({ id: booking.id, checkIn: booking.checkIn, checkOut: booking.checkOut })
       .from(booking)
-      .where(and(eq(booking.propertyId, params.id), inArray(booking.status, COMMITTED_STATUSES))),
+      .where(
+        and(eq(booking.propertyId, params.id), inArray(booking.status, committedBookingStatuses))
+      ),
     db
       .select({ id: blocking.id, startDate: blocking.startDate, endDate: blocking.endDate })
       .from(blocking)

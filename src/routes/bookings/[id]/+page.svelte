@@ -34,6 +34,11 @@
   </div>
 </form>
 
+<h2>Documents</h2>
+<p>
+  <a href={resolve('/bookings/[id]/documents', { id: data.booking.id })}>Generate documents →</a>
+</p>
+
 <h2>Delete</h2>
 <form method="POST" action="?/delete">
   <button class="danger" type="submit">Delete booking</button>

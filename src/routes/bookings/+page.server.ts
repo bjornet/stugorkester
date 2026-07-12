@@ -2,6 +2,7 @@ import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
 import { detectConflicts } from '$lib/server/availability';
 import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
+import { syncLedgerForBooking } from '$lib/server/ledger';
 import { booking, channel, guest, property } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
 import { asc, desc } from 'drizzle-orm';
@@ -47,6 +48,7 @@ export const actions: Actions = {
 
     const [created] = await db.insert(booking).values(parsed.value).returning({ id: booking.id });
     await syncCleaningTaskForBooking(created.id);
+    await syncLedgerForBooking(created.id);
     return { created: true };
   }
 };

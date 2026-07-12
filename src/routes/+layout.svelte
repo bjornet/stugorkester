@@ -13,6 +13,7 @@
     { href: '/blockings', label: 'Blockings' },
     { href: '/tasks', label: 'Tasks' },
     { href: '/feeds', label: 'Feeds' },
+    { href: '/economy', label: 'Economy' },
     { href: '/guests', label: 'Guests' }
   ] as const;
 

@@ -207,4 +207,11 @@
   main {
     display: block;
   }
+
+  /* App chrome (brand + nav) is not part of a printed document. */
+  @media print {
+    header {
+      display: none;
+    }
+  }
 </style>

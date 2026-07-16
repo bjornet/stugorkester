@@ -101,6 +101,12 @@
     margin: 0;
   }
 
+  /* Set explicit page margins so the browser drops its own URL/date
+     header and footer (Chrome omits them for any non-default margin). */
+  @page {
+    margin: 1.5cm;
+  }
+
   @media print {
     :global(header),
     .no-print {
@@ -117,6 +123,28 @@
       border-radius: 0;
       padding: 0;
       max-width: none;
+      font-size: 0.9rem;
+    }
+
+    /* Tighten vertical rhythm so a document fits one page where possible. */
+    .doc h1 {
+      font-size: 1.3rem;
+      margin: 0 0 0.5rem;
+    }
+
+    .doc h2 {
+      font-size: 1rem;
+      margin: 1rem 0 0.35rem;
+    }
+
+    .doc p {
+      margin: 0.25rem 0;
+    }
+
+    .meta {
+      gap: 0.35rem 1.5rem;
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.75rem;
     }
   }
 </style>

@@ -117,68 +117,35 @@ Non-phase work to pick up later.
 
 ## QA-walkthrough findings (2026-07-16)
 
-From a full end-to-end run of [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md).
-All 4 CI checks run; only `bun run test` fails (2 tests, pinpointing #B1).
+From a full end-to-end run of [`docs/qa-walkthrough.md`](docs/qa-walkthrough.md),
+now migrated to **GitHub issues** (`bjornet/stugorkester`, #11–#30) per the issue
+convention below. All 4 CI checks run; only `bun run test` fails (2 tests,
+pinpointing #11 / B1).
 
-### Bugs
+- **Bugs** — #11 (B1, off-by-one iCal), #12 (B2, FK constraint), #13 (B3, print
+  nav), #14 (B4, wrong Airbnb doc set)
+- **UX** — #15–#26 (U1–U12)
+- **Features** — #27 (F1, duplicate booking), #28 (F2, booking template),
+  #29 (F3, i18n)
+- **Content** — #30 (C1, template placeholders)
 
-- **B1 — iCal parser off by 1 day.** Imported shadow bookings land one day
-  earlier on both start and end. Failing unit tests in
-  `src/lib/sync/ical.test.ts` (`extracts uid and half-open dates …`,
-  `treats a date-only event with no DTEND …`). Root cause: JS `Date` in local
-  tz round-trip. Ties to the domain fact in #U6 (bookings aren't
-  midnight-to-midnight).
-- **B2 — Booking edit throws `FOREIGN KEY constraint failed`.**
-  - Delete action misses the cleaning-task cleanup
-    (`src/routes/bookings/[id]/+page.server.ts:54–58`).
-  - Status change also throws, but the writes commit — a later query in the
-    same request throws. Add a SvelteKit `handleError` hook to capture the
-    stack trace.
-- **B3 — Documents print/PDF shows the app top-nav.** Needs
-  `@media print { nav { display: none } }` on the layout.
-- **B4 — Wrong document set for Airbnb bookings.** Airbnb (partial-contract,
-  channel-payment) offers **Rental agreement** where spec (§4.1) calls for
-  **Terms addendum**.
+Triage: `ready-for-agent` for the crisp majority; `ready-for-human` for the ones
+needing a design/grill first (#18 U4, #19 U5, #20 U6, #29 F3). Start with #11 —
+it already has failing tests.
 
-### UX
-
-- **U1 — Highlight conflicting rows/cells** in the bookings table.
-- **U2 — Conflict banner in the booking edit form** (so it's visible before
-  clicking Save).
-- **U3 — Bookings table: column with links to related tasks.**
-- **U4 — Blockings via inline calendar admin** (Airbnb-style), ideally
-  on `/calendar`.
-- **U5 — Calendar entries: click → slide-out edit pane.**
-- **U6 — Calendar bars reflect intra-day timing** (partial-day overlap on
-  checkout and check-in day). Shared root with #B1.
-- **U7 — "Copy" button on iCal feed URL** (generalise to other copy-worthy
-  strings).
-- **U8 — Distinguish shadow / imported bookings visually** on the calendar.
-- **U9 — Booking edit/create: "Save changes" is a silent no-op** when a
-  conflict is shown; only "Save anyway" persists. Hide/disable or relabel.
-- **U10 — Sync-conflict task title** should also name/link the firm booking
-  it clashes with (today only mentions the shadow dates).
-- **U11 — Hide (or grey out) non-actionable buttons/actions** in general.
-- **U12 — Docs print CSS**: fit one page, drop browser URL header/footer,
-  tighten spacing.
-
-### Feature ideas
-
-- **F1 — Duplicate an existing booking.**
-- **F2 — Use existing booking as a template** for a new one (strip dates etc.).
-- **F3 — i18n** (English base, Swedish override). Recommendation: Paraglide
-  (Inlang). Run `/grill-me` on the language-switch UX before touching code.
-
-### Content
-
-- **C1 — Placeholder text in document templates.** `rental_agreement` and
-  check-in info still carry literal TODOs ("QA: what would even be fitting
-  here?", "Don't know how to fill this in…"). Fill or mark as required-fill.
+```sh
+gh issue list --label ready-for-agent   # AFK-able backlog
+gh issue list --label ready-for-human   # needs a design decision first
+```
 
 ## Where TODOs live (convention)
 
 - **Operational / listing TODOs** (adjust the listing, a specific cleaning, "update
   the annons on channel X") are **data the app manages** — they belong in the app
   as `Task` / `Property` records, not as Markdown in this repo.
-- **Development TODOs** (how the app works, what to build next) belong as Markdown
-  here — this file is their home.
+- **Actionable development work** (bugs, UX improvements, feature requests — how
+  the app works, what to build next) belongs as **GitHub issues**
+  (`bjornet/stugorkester`, `gh` CLI), not as Markdown here. See
+  [`AGENTS.md`](AGENTS.md) → Agent skills → Issue tracker.
+- **This file** stays a TL;DR: phase status, how to run locally, and standing
+  conventions — plus a pointer to the issue tracker for the live backlog.

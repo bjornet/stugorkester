@@ -5,10 +5,14 @@ import ical from 'node-ical';
 import type { VEvent } from 'node-ical';
 import type { FeedEvent } from './diff';
 
-// node-ical parses `VALUE=DATE` all-day events as UTC midnight, so the UTC
-// date part is the calendar day regardless of the host timezone.
+// node-ical parses `VALUE=DATE` all-day events at *local* midnight, so read the
+// date back through the local parts. Using `toISOString()` (UTC) would shift
+// the calendar day by one in any timezone east of UTC.
 function toYmd(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**

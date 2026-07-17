@@ -8,6 +8,12 @@
   let { data, form }: { data: PageData; form: ActionData } = $props();
 
   const canCreate = $derived(data.properties.length > 0 && data.channels.length > 0);
+
+  // While a conflict is shown, a plain "Create booking" just re-triggers the
+  // same 409 — a silent no-op. Disable it until the user edits a field;
+  // "Save anyway" always overrides. State resets each submit (full round-trip).
+  let edited = $state(false);
+  const createBlocked = $derived(!!form?.conflicts && !edited);
 </script>
 
 <h1>Bookings</h1>
@@ -57,7 +63,7 @@
     a booking.
   </p>
 {:else}
-  <form class="stack" method="POST" action="?/create">
+  <form class="stack" method="POST" action="?/create" oninput={() => (edited = true)}>
     <BookingFields
       properties={data.properties}
       channels={data.channels}
@@ -71,7 +77,7 @@
       <ConflictWarning conflicts={form.conflicts} />
     {/if}
     <div class="actions">
-      <button type="submit">Create booking</button>
+      <button type="submit" disabled={createBlocked}>Create booking</button>
       {#if form?.conflicts}
         <button class="danger" type="submit" name="force" value="true">Save anyway</button>
       {/if}

@@ -141,6 +141,11 @@
     cursor: pointer;
   }
 
+  :global(button:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   :global(button.secondary) {
     background: #fff;
     color: var(--fg);

@@ -162,6 +162,10 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#14 — Airbnb document set.** Re-seed (`bun run db:seed`), then on an
       **Airbnb** booking's Generate-documents page the set offers a **Terms
       addendum** (not a Rental agreement), same as Stugknuten.
+- [ ] **#23 — Save no-op under conflict.** On booking create/edit, trigger a
+      date conflict: the primary **Save changes / Create booking** button is
+      **disabled** (greyed); editing any field re-enables it; **Save anyway**
+      still persists.
 
 ## Part 4 — Automated checks
 

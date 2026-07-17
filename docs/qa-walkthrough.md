@@ -172,6 +172,9 @@ reminds you of the still-open (unticked) items here.
       loopback with an overlapping firm booking): the created **Sync conflict**
       task's title names the clashing entry (e.g. `booking 2026-08-03 → …`), not
       just the imported dates.
+- [ ] **#22 — Imported bookings on calendar.** Shadow (imported) bookings show
+      in a distinct **blue** with an "imported" title and a matching legend
+      entry, distinct from firm green/tentative amber/grey blockings.
 
 ## Part 4 — Automated checks
 

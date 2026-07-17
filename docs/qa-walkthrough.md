@@ -168,6 +168,10 @@ reminds you of the still-open (unticked) items here.
       still persists.
 - [ ] **#21 — Copy feed URL.** On a property page, the iCal feed URL has a
       **Copy** button; clicking it copies the URL and briefly shows "Copied!".
+- [ ] **#24 — Sync-conflict task title.** Trigger a sync conflict (import worker
+      loopback with an overlapping firm booking): the created **Sync conflict**
+      task's title names the clashing entry (e.g. `booking 2026-08-03 → …`), not
+      just the imported dates.
 
 ## Part 4 — Automated checks
 

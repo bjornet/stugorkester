@@ -59,3 +59,30 @@ export function isRangeFree(
 ): boolean {
   return findConflicts(candidate, occupancies, selfId).length === 0;
 }
+
+/** An occupancy tagged with the property it belongs to. */
+export interface PropertyOccupancy extends Occupancy {
+  propertyId: string;
+}
+
+/**
+ * Ids of the **booking** occupancies that overlap another occupancy on the same
+ * property — used to flag clashing rows in the bookings list. Blockings still
+ * count as something to clash with, but they aren't rows so aren't returned.
+ * Overlaps are only within a property (a stay elsewhere is never a conflict).
+ */
+export function conflictingBookingIds(occupancies: readonly PropertyOccupancy[]): Set<string> {
+  const byProperty = new Map<string, PropertyOccupancy[]>();
+  for (const o of occupancies) {
+    const peers = byProperty.get(o.propertyId) ?? [];
+    peers.push(o);
+    byProperty.set(o.propertyId, peers);
+  }
+
+  const ids = new Set<string>();
+  for (const o of occupancies) {
+    if (o.kind !== 'booking') continue;
+    if (findConflicts(o, byProperty.get(o.propertyId) ?? [], o.id).length > 0) ids.add(o.id);
+  }
+  return ids;
+}

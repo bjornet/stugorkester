@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { findConflicts, intervalsOverlap, isRangeFree, type Occupancy } from './availability';
+import {
+  conflictingBookingIds,
+  findConflicts,
+  intervalsOverlap,
+  isRangeFree,
+  type Occupancy,
+  type PropertyOccupancy
+} from './availability';
 
 describe('intervalsOverlap', () => {
   it('detects a plain overlap', () => {
@@ -106,5 +113,47 @@ describe('isRangeFree', () => {
 
   it('is false for an overlapping range', () => {
     expect(isRangeFree({ start: '2026-07-03', end: '2026-07-09' }, existing)).toBe(false);
+  });
+});
+
+describe('conflictingBookingIds', () => {
+  const pocc = (
+    id: string,
+    propertyId: string,
+    start: string,
+    end: string,
+    extra: Partial<PropertyOccupancy> = {}
+  ): PropertyOccupancy => ({ ...occ(id, start, end, extra), propertyId });
+
+  it('flags both bookings when two overlap on the same property', () => {
+    const ids = conflictingBookingIds([
+      pocc('a', 'p1', '2026-07-01', '2026-07-05'),
+      pocc('b', 'p1', '2026-07-04', '2026-07-08')
+    ]);
+    expect([...ids].sort()).toEqual(['a', 'b']);
+  });
+
+  it('does not flag non-overlapping or adjacent (half-open) bookings', () => {
+    const ids = conflictingBookingIds([
+      pocc('a', 'p1', '2026-07-01', '2026-07-05'),
+      pocc('b', 'p1', '2026-07-05', '2026-07-09')
+    ]);
+    expect(ids.size).toBe(0);
+  });
+
+  it('flags a booking that overlaps a blocking, but not the blocking itself', () => {
+    const ids = conflictingBookingIds([
+      pocc('a', 'p1', '2026-07-01', '2026-07-05'),
+      pocc('block', 'p1', '2026-07-03', '2026-07-04', { kind: 'blocking', status: null })
+    ]);
+    expect([...ids]).toEqual(['a']);
+  });
+
+  it('never treats stays on different properties as conflicts', () => {
+    const ids = conflictingBookingIds([
+      pocc('a', 'p1', '2026-07-01', '2026-07-05'),
+      pocc('b', 'p2', '2026-07-01', '2026-07-05')
+    ]);
+    expect(ids.size).toBe(0);
   });
 });

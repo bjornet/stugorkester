@@ -7,7 +7,7 @@ describe('documentsForChannel', () => {
     expect(docs).toEqual(['terms_addendum', 'checkin_info']);
   });
 
-  it('no coverage with channel payment (e.g. Airbnb) needs a rental agreement', () => {
+  it('no coverage with channel payment needs a rental agreement', () => {
     const docs = documentsForChannel({ contractCoverage: 'none', supportsPayment: true });
     expect(docs).toEqual(['rental_agreement', 'checkin_info']);
   });

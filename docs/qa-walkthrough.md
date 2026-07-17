@@ -159,6 +159,9 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#26 — Document print polish.** In the browser's Print preview of a
       document: no browser URL/date header or footer, tightened spacing, and a
       short document fits on one page.
+- [ ] **#14 — Airbnb document set.** Re-seed (`bun run db:seed`), then on an
+      **Airbnb** booking's Generate-documents page the set offers a **Terms
+      addendum** (not a Rental agreement), same as Stugknuten.
 
 ## Part 4 — Automated checks
 

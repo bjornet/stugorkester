@@ -1,6 +1,12 @@
 import { db } from './db';
 import { blocking, booking } from './db/schema';
-import { findConflicts, type DateInterval, type Occupancy } from '$lib/availability';
+import {
+  conflictingBookingIds,
+  findConflicts,
+  type DateInterval,
+  type Occupancy,
+  type PropertyOccupancy
+} from '$lib/availability';
 import { bookingStatusLabel } from '$lib/format';
 import { eq } from 'drizzle-orm';
 
@@ -45,6 +51,50 @@ export async function loadOccupancies(propertyId: string): Promise<Occupancy[]> 
   }));
 
   return [...bookingOccupancies, ...blockingOccupancies];
+}
+
+/**
+ * Ids of bookings that overlap another booking or blocking on the same
+ * property, across all properties — used to flag clashing rows in the bookings
+ * list (design §4.2).
+ */
+export async function loadConflictingBookingIds(): Promise<string[]> {
+  const [bookings, blockings] = await Promise.all([
+    db.query.booking.findMany({
+      columns: { id: true, propertyId: true, checkIn: true, checkOut: true, status: true }
+    }),
+    db
+      .select({
+        id: blocking.id,
+        propertyId: blocking.propertyId,
+        startDate: blocking.startDate,
+        endDate: blocking.endDate
+      })
+      .from(blocking)
+  ]);
+
+  const occupancies: PropertyOccupancy[] = [
+    ...bookings.map((b) => ({
+      id: b.id,
+      propertyId: b.propertyId,
+      kind: 'booking' as const,
+      label: '',
+      start: b.checkIn,
+      end: b.checkOut,
+      status: b.status
+    })),
+    ...blockings.map((b) => ({
+      id: b.id,
+      propertyId: b.propertyId,
+      kind: 'blocking' as const,
+      label: '',
+      start: b.startDate,
+      end: b.endDate,
+      status: null
+    }))
+  ];
+
+  return [...conflictingBookingIds(occupancies)];
 }
 
 /** One-line, human-readable description of a conflicting occupancy. */

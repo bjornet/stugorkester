@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { parseBooking } from '$lib/server/booking-form';
-import { detectConflicts } from '$lib/server/availability';
+import { detectConflicts, loadConflictingBookingIds } from '$lib/server/availability';
 import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { syncLedgerForBooking } from '$lib/server/ledger';
 import { booking, channel, guest, property } from '$lib/server/db/schema';
@@ -9,7 +9,7 @@ import { asc, desc } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const [bookings, properties, channels, guests] = await Promise.all([
+  const [bookings, conflictIds, properties, channels, guests] = await Promise.all([
     db.query.booking.findMany({
       with: {
         property: { columns: { name: true } },
@@ -18,12 +18,13 @@ export const load: PageServerLoad = async () => {
       },
       orderBy: (b) => [desc(b.checkIn)]
     }),
+    loadConflictingBookingIds(),
     db.select({ id: property.id, name: property.name }).from(property).orderBy(asc(property.name)),
     db.select({ id: channel.id, name: channel.name }).from(channel).orderBy(asc(channel.name)),
     db.select({ id: guest.id, name: guest.name }).from(guest).orderBy(asc(guest.name))
   ]);
 
-  return { bookings, properties, channels, guests };
+  return { bookings, conflictIds, properties, channels, guests };
 };
 
 export const actions: Actions = {

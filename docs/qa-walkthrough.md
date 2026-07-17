@@ -180,6 +180,9 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#22 — Imported bookings on calendar.** Shadow (imported) bookings show
       in a distinct **blue** with an "imported" title and a matching legend
       entry, distinct from firm green/tentative amber/grey blockings.
+- [ ] **#15 — Conflicting rows highlighted.** In the bookings table, a booking
+      that overlaps another booking/blocking on the same property shows a tinted
+      row + a ⚠ marker on the check-in cell (hover shows why).
 
 ## Part 4 — Automated checks
 

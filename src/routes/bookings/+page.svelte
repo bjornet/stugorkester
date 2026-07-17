@@ -8,6 +8,8 @@
   let { data, form }: { data: PageData; form: ActionData } = $props();
 
   const canCreate = $derived(data.properties.length > 0 && data.channels.length > 0);
+  // Rows whose dates overlap another booking/blocking on the same property.
+  const conflictIds = $derived(new Set(data.conflictIds));
 
   // While a conflict is shown, a plain "Create booking" just re-triggers the
   // same 409 — a silent no-op. Disable it until the user edits a field;
@@ -36,8 +38,11 @@
     </thead>
     <tbody>
       {#each data.bookings as item (item.id)}
-        <tr>
-          <td>{item.checkIn}</td>
+        {@const conflict = conflictIds.has(item.id)}
+        <tr class:conflict title={conflict ? 'Overlaps another booking or blocking' : undefined}>
+          <td
+            >{item.checkIn}{#if conflict}<span class="flag" aria-label="conflict">⚠</span>{/if}</td
+          >
           <td>{item.checkOut}</td>
           <td>{item.property.name}</td>
           <td>{item.channel.name}</td>
@@ -84,3 +89,14 @@
     </div>
   </form>
 {/if}
+
+<style>
+  tr.conflict td {
+    background: #fdf3f3;
+  }
+
+  .flag {
+    margin-left: 0.4rem;
+    color: var(--danger);
+  }
+</style>

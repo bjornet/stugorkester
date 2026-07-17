@@ -8,12 +8,19 @@
 
   // On a failed update, re-show what the user typed; otherwise the stored row.
   const values = $derived(form?.values ?? data.booking);
+
+  // While a conflict is shown, a plain "Save changes" just re-triggers the same
+  // 409 — a silent no-op. Disable it until the user edits a field (which can
+  // clear the conflict); "Save anyway" always overrides. State resets on each
+  // submit because the form does a full round-trip (no use:enhance).
+  let edited = $state(false);
+  const saveBlocked = $derived(!!form?.conflicts && !edited);
 </script>
 
 <p><a href={resolve('/bookings')}>← Bookings</a></p>
 <h1>Edit booking</h1>
 
-<form class="stack" method="POST" action="?/update">
+<form class="stack" method="POST" action="?/update" oninput={() => (edited = true)}>
   <BookingFields
     properties={data.properties}
     channels={data.channels}
@@ -27,7 +34,7 @@
     <ConflictWarning conflicts={form.conflicts} />
   {/if}
   <div class="actions">
-    <button type="submit">Save changes</button>
+    <button type="submit" disabled={saveBlocked}>Save changes</button>
     {#if form?.conflicts}
       <button class="danger" type="submit" name="force" value="true">Save anyway</button>
     {/if}

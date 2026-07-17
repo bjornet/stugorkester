@@ -15,6 +15,11 @@
   // submit because the form does a full round-trip (no use:enhance).
   let edited = $state(false);
   const saveBlocked = $derived(!!form?.conflicts && !edited);
+
+  // Show the conflict banner before any save: after a rejected submit use the
+  // fresh set for the typed values (`form.conflicts`); otherwise the stored
+  // booking's conflicts computed on load (`data.conflicts`).
+  const conflicts = $derived(form?.conflicts ?? data.conflicts);
 </script>
 
 <p><a href={resolve('/bookings')}>← Bookings</a></p>
@@ -30,8 +35,8 @@
   {#if form?.error}
     <p class="error">{form.error}</p>
   {/if}
-  {#if form?.conflicts}
-    <ConflictWarning conflicts={form.conflicts} />
+  {#if conflicts && conflicts.length > 0}
+    <ConflictWarning {conflicts} />
   {/if}
   <div class="actions">
     <button type="submit" disabled={saveBlocked}>Save changes</button>

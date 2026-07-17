@@ -186,6 +186,9 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#17 — Related tasks column.** The bookings table has a **Tasks** column
       linking to each booking's related task(s) (e.g. its cleaning task at
       `/tasks/<id>`); bookings with none show "–".
+- [ ] **#16 — Conflict banner on edit load.** Open an existing booking that
+      overlaps another entry: the conflict banner shows immediately (before any
+      save), listing the clashing entry.
 
 ## Part 4 — Automated checks
 

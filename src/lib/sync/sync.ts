@@ -2,7 +2,7 @@ import { Data, Duration, Effect, Schedule } from 'effect';
 import { and, eq } from 'drizzle-orm';
 import type { DrizzleDb } from '../server/db/client.ts';
 import { blocking, booking, channelFeed, task } from '../server/db/schema.ts';
-import { findConflicts, type Occupancy } from '../availability.ts';
+import { findConflicts, type DateInterval, type Occupancy } from '../availability.ts';
 import { diffShadowBookings, type ExistingShadow } from './diff.ts';
 import { parseIcalFeed } from './ical.ts';
 
@@ -103,6 +103,16 @@ async function loadFirmOccupancies(db: DrizzleDb, propertyId: string): Promise<O
   ];
 }
 
+/**
+ * Conflict-task title that names the firm booking(s)/blocking(s) an imported
+ * stay overlaps, so the task points at what actually clashes (design §4.2)
+ * rather than only restating the imported dates.
+ */
+export function conflictTaskTitle(imported: DateInterval, clashes: readonly Occupancy[]): string {
+  const overlaps = clashes.map((c) => `${c.label} ${c.start} → ${c.end}`).join(', ');
+  return `Sync conflict: imported ${imported.start} → ${imported.end} overlaps ${overlaps}`;
+}
+
 /** Create a conflict task once per (property, title); pending ones aren't duplicated. */
 async function ensureConflictTask(
   db: DrizzleDb,
@@ -163,8 +173,10 @@ export async function persistSync(
   const firm = await loadFirmOccupancies(db, feed.propertyId);
   let conflicts = 0;
   for (const event of events) {
-    if (findConflicts({ start: event.start, end: event.end }, firm).length === 0) continue;
-    const title = `Sync conflict: imported ${event.start} → ${event.end} overlaps an existing booking or blocking`;
+    const imported = { start: event.start, end: event.end };
+    const clashes = findConflicts(imported, firm);
+    if (clashes.length === 0) continue;
+    const title = conflictTaskTitle(imported, clashes);
     if (await ensureConflictTask(db, feed.propertyId, title)) conflicts++;
   }
 

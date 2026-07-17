@@ -56,6 +56,7 @@
 <div class="legend">
   <span><i style="background: #2f6f4f"></i> Confirmed booking</span>
   <span><i style="background: #c9932f"></i> Tentative (inquiry/offer)</span>
+  <span><i style="background: #3a6ea5"></i> Imported (shadow)</span>
   <span><i style="background: #8a8a8a"></i> Blocking</span>
 </div>
 

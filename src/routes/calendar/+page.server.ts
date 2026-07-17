@@ -17,16 +17,26 @@ export interface CalendarEvent {
 }
 
 // Firm bookings are green; tentative ones (inquiry/offered) amber so an
-// unconfirmed hold reads differently from a committed stay; blockings grey.
+// unconfirmed hold reads differently from a committed stay; blockings grey;
+// imported channel shadows blue, since they await manual completion (§2) and
+// shouldn't be mistaken for a firm confirmed stay.
 const CONFIRMED = '#2f6f4f';
 const TENTATIVE = '#c9932f';
 const BLOCKED = '#8a8a8a';
+const IMPORTED = '#3a6ea5';
 const TENTATIVE_STATUSES = new Set(['inquiry', 'offered']);
 
 export const load: PageServerLoad = async () => {
   const [bookings, blockings, properties] = await Promise.all([
     db.query.booking.findMany({
-      columns: { id: true, propertyId: true, checkIn: true, checkOut: true, status: true },
+      columns: {
+        id: true,
+        propertyId: true,
+        checkIn: true,
+        checkOut: true,
+        status: true,
+        isShadow: true
+      },
       with: { property: { columns: { name: true } }, guest: { columns: { name: true } } }
     }),
     db.query.blocking.findMany({
@@ -39,12 +49,12 @@ export const load: PageServerLoad = async () => {
   const events: CalendarEvent[] = [
     ...bookings.map((b) => ({
       id: `booking-${b.id}`,
-      title: `${b.property.name}: ${b.guest?.name ?? b.status}`,
+      title: `${b.property.name}: ${b.isShadow ? 'imported' : (b.guest?.name ?? b.status)}`,
       start: b.checkIn,
       end: b.checkOut,
       propertyId: b.propertyId,
       kind: 'booking' as const,
-      color: TENTATIVE_STATUSES.has(b.status) ? TENTATIVE : CONFIRMED
+      color: b.isShadow ? IMPORTED : TENTATIVE_STATUSES.has(b.status) ? TENTATIVE : CONFIRMED
     })),
     ...blockings.map((b) => ({
       id: `blocking-${b.id}`,

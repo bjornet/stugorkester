@@ -81,6 +81,21 @@ follow-up. QA is not a merge gate, but the bullet is required.
 When reporting progress, remind the user of the aggregate of still-unticked
 (not-yet-verified) items in that section.
 
+## Autonomous (AFK) runs
+
+For work queued to run unattended:
+
+- **Build loop.** Build each issue with the full `/implement` loop (`/tdd`
+  red-green → `/code-review` two-axis Standards + Spec → commit), one issue per
+  fresh context, plus its Change-driven QA bullet.
+- **Merge policy.** PRs for `ready-for-agent` issues merge to `main`
+  automatically once CI is green (real merge commit — never squash). Issues
+  labelled `ready-for-human` are never auto-implemented or auto-merged; they wait
+  for the user's design/grill decision.
+- **End-of-run report.** Finish every autonomous run with a single clear list, at
+  the very end, of every PR touched — which were auto-merged vs still open, with
+  a one-line rationale for each, and anything left waiting on the user.
+
 ## Version control
 
 - **Never squash merge.** Merge pull requests with a real merge commit (or

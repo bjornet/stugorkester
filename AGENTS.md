@@ -69,6 +69,18 @@ infrastructure.
   belong in the app as `Task`/`Property` records, not as Markdown here. Only
   development TODOs live as Markdown; the roadmap is in `ROADMAP.md`.
 
+## QA walkthrough upkeep
+
+Every change that adds or alters user-facing behaviour must add a manual-QA
+bullet to the **Change-driven QA** section of
+[`docs/qa-walkthrough.md`](docs/qa-walkthrough.md), tagged with its issue number
+and phrased as a testable check the user runs in the running app. The bullet
+rides **with** the feature/fix PR (like tests and changesets), not as a
+follow-up. QA is not a merge gate, but the bullet is required.
+
+When reporting progress, remind the user of the aggregate of still-unticked
+(not-yet-verified) items in that section.
+
 ## Version control
 
 - **Never squash merge.** Merge pull requests with a real merge commit (or

@@ -166,6 +166,8 @@ reminds you of the still-open (unticked) items here.
       date conflict: the primary **Save changes / Create booking** button is
       **disabled** (greyed); editing any field re-enables it; **Save anyway**
       still persists.
+- [ ] **#21 — Copy feed URL.** On a property page, the iCal feed URL has a
+      **Copy** button; clicking it copies the URL and briefly shows "Copied!".
 
 ## Part 4 — Automated checks
 

@@ -69,6 +69,33 @@ infrastructure.
   belong in the app as `Task`/`Property` records, not as Markdown here. Only
   development TODOs live as Markdown; the roadmap is in `ROADMAP.md`.
 
+## QA walkthrough upkeep
+
+Every change that adds or alters user-facing behaviour must add a manual-QA
+bullet to the **Change-driven QA** section of
+[`docs/qa-walkthrough.md`](docs/qa-walkthrough.md), tagged with its issue number
+and phrased as a testable check the user runs in the running app. The bullet
+rides **with** the feature/fix PR (like tests and changesets), not as a
+follow-up. QA is not a merge gate, but the bullet is required.
+
+When reporting progress, remind the user of the aggregate of still-unticked
+(not-yet-verified) items in that section.
+
+## Autonomous (AFK) runs
+
+For work queued to run unattended:
+
+- **Build loop.** Build each issue with the full `/implement` loop (`/tdd`
+  red-green → `/code-review` two-axis Standards + Spec → commit), one issue per
+  fresh context, plus its Change-driven QA bullet.
+- **Merge policy.** PRs for `ready-for-agent` issues merge to `main`
+  automatically once CI is green (real merge commit — never squash). Issues
+  labelled `ready-for-human` are never auto-implemented or auto-merged; they wait
+  for the user's design/grill decision.
+- **End-of-run report.** Finish every autonomous run with a single clear list, at
+  the very end, of every PR touched — which were auto-merged vs still open, with
+  a one-line rationale for each, and anything left waiting on the user.
+
 ## Version control
 
 - **Never squash merge.** Merge pull requests with a real merge commit (or

@@ -144,7 +144,23 @@ Then, with `bun run dev` still running, `bun run worker:once`:
 - [ ] Opening a document renders it with the booking's data; **Print / Save as
       PDF** produces a clean page with no app navigation.
 
-## Part 3 — Automated checks
+## Part 3 — Change-driven QA
+
+Manual checks tied to specific changes, added as fixes/features land and **not
+yet verified**. Tick each once you've confirmed it in the running app; QA is not
+a merge gate, but the bullet is required for every user-facing change. Claude
+reminds you of the still-open (unticked) items here.
+
+- [ ] **#11 — iCal off-by-one.** Register a feed and import (see the Import-worker
+      loopback above): shadow bookings land on the **exact** source dates, not a
+      day earlier. Confirm in a non-UTC timezone.
+- [ ] **#13 — Print hides app chrome.** Print / Save-as-PDF any generated
+      document — the app header (brand + nav) is absent from the output.
+- [ ] **#26 — Document print polish.** In the browser's Print preview of a
+      document: no browser URL/date header or footer, tightened spacing, and a
+      short document fits on one page.
+
+## Part 4 — Automated checks
 
 These are what CI runs; all should pass before pushing:
 

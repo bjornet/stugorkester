@@ -1,7 +1,7 @@
 import * as schema from './schema.ts';
 
 // Channel capability seed data (design §4.1/§4.4). Kept as pure data with no DB
-// access so the picker, tests, and the seed script all share one source of
+// access so the seed script and its regression test share one source of
 // truth and it can be asserted without side effects. The capability attributes
 // (payment, contract coverage, …) drive which documents each booking needs —
 // see `src/lib/documents.ts`.

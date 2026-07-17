@@ -183,6 +183,9 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#15 — Conflicting rows highlighted.** In the bookings table, a booking
       that overlaps another booking/blocking on the same property shows a tinted
       row + a ⚠ marker on the check-in cell (hover shows why).
+- [ ] **#17 — Related tasks column.** The bookings table has a **Tasks** column
+      linking to each booking's related task(s) (e.g. its cleaning task at
+      `/tasks/<id>`); bookings with none show "–".
 
 ## Part 4 — Automated checks
 

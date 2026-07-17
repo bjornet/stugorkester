@@ -3,13 +3,13 @@ import { parseBooking } from '$lib/server/booking-form';
 import { detectConflicts, loadConflictingBookingIds } from '$lib/server/availability';
 import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { syncLedgerForBooking } from '$lib/server/ledger';
-import { booking, channel, guest, property } from '$lib/server/db/schema';
+import { booking, channel, guest, property, task } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
-import { asc, desc } from 'drizzle-orm';
+import { asc, desc, isNotNull } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const [bookings, conflictIds, properties, channels, guests] = await Promise.all([
+  const [bookings, conflictIds, bookingTasks, properties, channels, guests] = await Promise.all([
     db.query.booking.findMany({
       with: {
         property: { columns: { name: true } },
@@ -19,12 +19,24 @@ export const load: PageServerLoad = async () => {
       orderBy: (b) => [desc(b.checkIn)]
     }),
     loadConflictingBookingIds(),
+    db
+      .select({ id: task.id, bookingId: task.bookingId, title: task.title })
+      .from(task)
+      .where(isNotNull(task.bookingId)),
     db.select({ id: property.id, name: property.name }).from(property).orderBy(asc(property.name)),
     db.select({ id: channel.id, name: channel.name }).from(channel).orderBy(asc(channel.name)),
     db.select({ id: guest.id, name: guest.name }).from(guest).orderBy(asc(guest.name))
   ]);
 
-  return { bookings, conflictIds, properties, channels, guests };
+  // Tasks linked to each booking (e.g. its cleaning task), for the list's
+  // Tasks column.
+  const tasksByBooking: Record<string, { id: string; title: string }[]> = {};
+  for (const t of bookingTasks) {
+    if (!t.bookingId) continue;
+    (tasksByBooking[t.bookingId] ??= []).push({ id: t.id, title: t.title });
+  }
+
+  return { bookings, conflictIds, tasksByBooking, properties, channels, guests };
 };
 
 export const actions: Actions = {

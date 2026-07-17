@@ -33,6 +33,7 @@
         <th>Guest</th>
         <th>Status</th>
         <th>Total</th>
+        <th>Tasks</th>
         <th></th>
       </tr>
     </thead>
@@ -49,6 +50,15 @@
           <td class="muted">{item.guest?.name ?? '–'}</td>
           <td>{bookingStatusLabel(item.status)}</td>
           <td>{money(item.totalPrice)}</td>
+          <td>
+            {#each data.tasksByBooking[item.id] ?? [] as t, i (t.id)}
+              {#if i > 0}<span class="muted">, </span>{/if}<a
+                href={resolve('/tasks/[id]', { id: t.id })}>{t.title}</a
+              >
+            {:else}
+              <span class="muted">–</span>
+            {/each}
+          </td>
           <td><a href={resolve('/bookings/[id]', { id: item.id })}>Edit</a></td>
         </tr>
       {/each}

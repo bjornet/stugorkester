@@ -18,7 +18,15 @@ export const load: PageServerLoad = async ({ params }) => {
 
   if (!found) throw error(404, 'Booking not found');
 
-  return { booking: found, properties, channels, guests };
+  // Surface any existing conflict up front (design §4.2) so the warning is
+  // visible before the user tries to save, not only after a rejected submit.
+  const conflicts = await detectConflicts(
+    found.propertyId,
+    { start: found.checkIn, end: found.checkOut },
+    found.id
+  );
+
+  return { booking: found, conflicts, properties, channels, guests };
 };
 
 export const actions: Actions = {

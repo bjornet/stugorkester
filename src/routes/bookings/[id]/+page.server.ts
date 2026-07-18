@@ -64,5 +64,33 @@ export const actions: Actions = {
     await db.delete(ledgerEntry).where(eq(ledgerEntry.bookingId, params.id));
     await db.delete(booking).where(eq(booking.id, params.id));
     throw redirect(303, '/bookings');
+  },
+
+  duplicate: async ({ params }) => {
+    const src = await db.select().from(booking).where(eq(booking.id, params.id)).get();
+    if (!src) throw error(404, 'Booking not found');
+
+    // Copy the stay (property, channel, dates, prices) but create a tentative
+    // draft: status inquiry (so no cleaning task / ledger is auto-posted), no
+    // guest, and never a shadow. The user adjusts it on the new edit page.
+    const [created] = await db
+      .insert(booking)
+      .values({
+        propertyId: src.propertyId,
+        channelId: src.channelId,
+        guestId: null,
+        status: 'inquiry',
+        checkIn: src.checkIn,
+        checkOut: src.checkOut,
+        basePrice: src.basePrice,
+        cleaningFee: src.cleaningFee,
+        totalPrice: src.totalPrice,
+        cancellationPolicy: src.cancellationPolicy,
+        isShadow: false,
+        externalRef: null
+      })
+      .returning({ id: booking.id });
+
+    throw redirect(303, `/bookings/${created.id}`);
   }
 };

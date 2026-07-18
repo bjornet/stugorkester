@@ -51,6 +51,12 @@
   <a href={resolve('/bookings/[id]/documents', { id: data.booking.id })}>Generate documents →</a>
 </p>
 
+<h2>Duplicate</h2>
+<p class="muted">Creates a tentative copy (same property, dates and prices; no guest) to adjust.</p>
+<form method="POST" action="?/duplicate">
+  <button class="secondary" type="submit">Duplicate as draft</button>
+</form>
+
 <h2>Delete</h2>
 <form method="POST" action="?/delete">
   <button class="danger" type="submit">Delete booking</button>

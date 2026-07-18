@@ -189,6 +189,10 @@ reminds you of the still-open (unticked) items here.
 - [ ] **#16 — Conflict banner on edit load.** Open an existing booking that
       overlaps another entry: the conflict banner shows immediately (before any
       save), listing the clashing entry.
+- [ ] **#27 — Duplicate booking.** On a booking's edit page, **Duplicate as
+      draft** creates a copy (same property/dates/prices, **status inquiry**, **no
+      guest**) and lands on the new booking's edit page; no cleaning task or
+      ledger entry is auto-created for the draft.
 
 ## Part 4 — Automated checks
 

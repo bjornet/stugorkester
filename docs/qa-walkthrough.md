@@ -193,6 +193,10 @@ reminds you of the still-open (unticked) items here.
       draft** creates a copy (same property/dates/prices, **status inquiry**, **no
       guest**) and lands on the new booking's edit page; no cleaning task or
       ledger entry is auto-created for the draft.
+- [ ] **#28 — Booking as template.** On a booking's edit page, **Use as
+      template** opens the Add-booking form prefilled with its property, channel
+      and prices, but **dates and guest blank**; a hint says so. Filling dates +
+      Create makes a normal new booking.
 
 ## Part 4 — Automated checks
 

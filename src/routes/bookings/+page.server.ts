@@ -5,10 +5,10 @@ import { syncCleaningTaskForBooking } from '$lib/server/cleaning';
 import { syncLedgerForBooking } from '$lib/server/ledger';
 import { booking, channel, guest, property, task } from '$lib/server/db/schema';
 import { fail } from '@sveltejs/kit';
-import { asc, desc, isNotNull } from 'drizzle-orm';
+import { asc, desc, eq, isNotNull } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
   const [bookings, conflictIds, bookingTasks, properties, channels, guests] = await Promise.all([
     db.query.booking.findMany({
       with: {
@@ -36,7 +36,25 @@ export const load: PageServerLoad = async () => {
     (tasksByBooking[t.bookingId] ??= []).push({ id: t.id, title: t.title });
   }
 
-  return { bookings, conflictIds, tasksByBooking, properties, channels, guests };
+  // `?template=<id>` pre-fills the create form from an existing booking, minus
+  // the dates and guest (a template is reused for a new, different stay).
+  const templateId = url.searchParams.get('template');
+  const template = templateId
+    ? ((await db
+        .select({
+          propertyId: booking.propertyId,
+          channelId: booking.channelId,
+          basePrice: booking.basePrice,
+          cleaningFee: booking.cleaningFee,
+          totalPrice: booking.totalPrice,
+          cancellationPolicy: booking.cancellationPolicy
+        })
+        .from(booking)
+        .where(eq(booking.id, templateId))
+        .get()) ?? null)
+    : null;
+
+  return { bookings, conflictIds, tasksByBooking, template, properties, channels, guests };
 };
 
 export const actions: Actions = {

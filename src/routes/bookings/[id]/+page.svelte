@@ -57,6 +57,13 @@
   <button class="secondary" type="submit">Duplicate as draft</button>
 </form>
 
+<h2>Template</h2>
+<p class="muted">
+  Start a <em>new</em> booking prefilled from this one's property, channel and prices (dates and guest
+  left blank).
+</p>
+<p><a href="{resolve('/bookings')}?template={data.booking.id}">Use as template →</a></p>
+
 <h2>Delete</h2>
 <form method="POST" action="?/delete">
   <button class="danger" type="submit">Delete booking</button>

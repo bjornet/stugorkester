@@ -72,6 +72,10 @@
   <p class="muted">Booking created.</p>
 {/if}
 
+{#if data.template && !form}
+  <p class="muted">Prefilled from a template — set the dates (and guest) to complete it.</p>
+{/if}
+
 {#if !canCreate}
   <p class="muted">
     You need at least one <a href={resolve('/properties')}>property</a> and one channel before adding
@@ -83,7 +87,7 @@
       properties={data.properties}
       channels={data.channels}
       guests={data.guests}
-      values={form?.values ?? {}}
+      values={form?.values ?? data.template ?? {}}
     />
     {#if form?.error}
       <p class="error">{form.error}</p>

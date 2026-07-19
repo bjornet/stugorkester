@@ -197,6 +197,10 @@ reminds you of the still-open (unticked) items here.
       template** opens the Add-booking form prefilled with its property, channel
       and prices, but **dates and guest blank**; a hint says so. Filling dates +
       Create makes a normal new booking.
+- [ ] **#12 — Delete booking with a cleaning task.** Confirm a booking (creates
+      its cleaning task), then delete the booking: it succeeds with **no error**,
+      and its cleaning task + ledger entries are gone (previously threw a foreign
+      key error).
 
 ## Part 4 — Automated checks
 
